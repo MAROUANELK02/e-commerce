@@ -20,7 +20,7 @@ public class OrderController {
     @GetMapping("/send")
     public String send() {
         try {
-            /*
+
             Order order = Order.builder()
                     .orderId(1L)
                     .orderDate(LocalDateTime.now())
@@ -29,8 +29,8 @@ public class OrderController {
                     .status(OrderStatus.PENDING)
                     .orderItems(null)
                     .build();
-                    */
-            kafkaProducer.send("order");
+
+            kafkaProducer.send(order);
         }catch (Throwable ex) {
             return ex.getMessage();
         }
