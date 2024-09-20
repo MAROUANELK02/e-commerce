@@ -1,0 +1,19 @@
+package com.ecom.product_service.enums;
+
+public enum ECategory {
+    TELEVISIONS,
+    COMPUTERS,
+    MOBILE_PHONES,
+    HOME_APPLIANCES,
+    KITCHEN_APPLIANCES,
+    AUDIO_SYSTEMS,
+    CAMERAS,
+    GAMING_CONSOLES,
+    PERSONAL_CARE,
+    ACCESSORIES,
+    SMART_HOME,
+    AIR_CONDITIONERS,
+    WASHING_MACHINES,
+    REFRIGERATORS,
+    VACUUM_CLEANERS
+}
