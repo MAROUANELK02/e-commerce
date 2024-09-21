@@ -16,12 +16,14 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Builder
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
     private Long userId;
     private LocalDateTime orderDate;
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
     private BigDecimal totalAmount;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)

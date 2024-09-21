@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +42,23 @@ public class OrderItemServiceImpl implements OrderItemService {
         List<OrderItem> orderItems = new ArrayList<>();
         for (OrderItemDTORequest orderItemDTORequest : orderItemDTORequests) {
             orderItems.add(save(orderItemDTORequest, orderId));
+        }
+
+        BigDecimal total = BigDecimal.ZERO;
+
+        total = orderItems.stream()
+                .map(orderItem -> orderItem.getPrice()
+                        .multiply(BigDecimal.valueOf(orderItem.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        Optional<Order> order = orderRepository.findById(orderId);
+
+        if(order.isPresent()) {
+            Order order1 = order.get();
+            order1.setTotalAmount(total);
+            orderRepository.save(order1);
+        }else{
+            throw new OrderNotFoundException("Order not found");
         }
     }
 
