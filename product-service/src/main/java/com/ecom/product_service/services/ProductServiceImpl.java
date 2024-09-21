@@ -19,10 +19,13 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
+    private final InventoryService inventoryService;
 
     @Override
     public Product addProduct(Product product) {
-        return productRepository.save(product);
+        Product save = productRepository.save(product);
+        inventoryService.createInventory(product.getProductId());
+        return save;
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.ecom.product_service.services.ProductService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 
 import java.math.BigDecimal;
@@ -15,13 +16,14 @@ import java.util.List;
 import java.util.Optional;
 
 @SpringBootApplication
+@EnableFeignClients
 public class ProductServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProductServiceApplication.class, args);
 	}
 
-	@Bean
+	//@Bean
 	CommandLineRunner commandLineRunner(ProductService productService,
 										CategoryRepository categoryRepository) {
 		return args -> {
