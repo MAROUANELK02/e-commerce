@@ -3,6 +3,7 @@ package com.ecom.inventory_service.controllers;
 import com.ecom.inventory_service.exceptions.InsufficientStockException;
 import com.ecom.inventory_service.exceptions.InventoryAlreadyExistsException;
 import com.ecom.inventory_service.exceptions.InventoryNotFoundException;
+import com.ecom.inventory_service.mappers.InventoryMapper;
 import com.ecom.inventory_service.services.InventoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class InventoryController {
     private final InventoryService inventoryService;
+    private final InventoryMapper inventoryMapper;
 
     @GetMapping("/quantity/{productId}")
     public ResponseEntity<?> getQuantity(@PathVariable Long productId) {
@@ -56,7 +58,7 @@ public class InventoryController {
     @PostMapping("/createInventory/{productId}")
     public ResponseEntity<?> createInventory(@PathVariable(name = "productId") long productId) {
         try {
-            return ResponseEntity.ok().body(inventoryService.createInventory(productId));
+            return ResponseEntity.ok().body(inventoryMapper.toInventoryDTO(inventoryService.createInventory(productId)));
         } catch (InventoryAlreadyExistsException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

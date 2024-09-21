@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -41,7 +40,7 @@ public class ProductController {
     public ResponseEntity<?> saveProduct(@RequestBody ProductDTO product) {
         try {
             Product added = productService.addProduct(productMapper.ToProduct(product));
-            return ResponseEntity.ok(added);
+            return ResponseEntity.ok(productMapper.ToProductDTO(added));
         }catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -51,9 +50,19 @@ public class ProductController {
     public ResponseEntity<?> getProduct(@PathVariable(name = "id") Long id) {
         try {
             Product product = productService.getProduct(id);
-            return ResponseEntity.ok(product);
+            return ResponseEntity.ok(productMapper.ToProductDTO(product));
         } catch (ProductNotFoundException e) {
-            throw new RuntimeException(e);
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/price/{productId}")
+    public ResponseEntity<?> getPrice(@PathVariable(name = "productId") long productId) {
+        try {
+            BigDecimal price = productService.getProduct(productId).getPrice();
+            return ResponseEntity.ok().body(price);
+        } catch (ProductNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

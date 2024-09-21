@@ -1,39 +1,36 @@
 package com.ecom.order_service.controllers;
 
-import com.ecom.order_service.entities.Order;
-import com.ecom.order_service.enums.OrderStatus;
-import com.ecom.order_service.kafka.KafkaProducer;
+import com.ecom.order_service.dtos.OrderItemDTORequest;
+import com.ecom.order_service.exceptions.OrderNotFoundException;
+import com.ecom.order_service.services.OrderService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
-@RequestMapping("/order")
 @AllArgsConstructor
 public class OrderController {
-    private KafkaProducer kafkaProducer;
+    private final OrderService orderService;
 
-    @GetMapping("/send")
-    public String send() {
+    @PostMapping("/order/{userId}")
+    public ResponseEntity<?> createOrder(@PathVariable Long userId,
+                                         @RequestBody List<OrderItemDTORequest> orderItems) {
         try {
-
-            Order order = Order.builder()
-                    .orderId(1L)
-                    .orderDate(LocalDateTime.now())
-                    .totalAmount(BigDecimal.valueOf(1500.50))
-                    .userId(1L)
-                    .status(OrderStatus.PENDING)
-                    .orderItems(null)
-                    .build();
-
-            kafkaProducer.send(order);
-        }catch (Throwable ex) {
-            return ex.getMessage();
+            return ResponseEntity.ok().body(orderService.createOrder(userId, orderItems));
+        } catch (OrderNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return "Message sent";
     }
+
+    @GetMapping("/orderStatus/{orderId}")
+    public ResponseEntity<?> getOrderStatus(@PathVariable Long orderId) {
+        try {
+            return ResponseEntity.ok().body(orderService.getOrder(orderId).getStatus());
+        } catch (OrderNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

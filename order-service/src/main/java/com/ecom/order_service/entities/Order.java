@@ -24,6 +24,6 @@ public class Order {
     private LocalDateTime orderDate;
     private OrderStatus status;
     private BigDecimal totalAmount;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
 }
