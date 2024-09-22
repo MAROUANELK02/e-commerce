@@ -3,6 +3,10 @@ package com.ecom.payment_service.kafka;
 import com.ecom.payment_service.dtos.OrderCreated;
 import com.ecom.payment_service.entities.Payment;
 import com.ecom.payment_service.enums.PaymentStatus;
+import com.ecom.payment_service.paypal.PaypalService;
+import com.ecom.payment_service.repositories.PaymentRepository;
+import com.paypal.api.payments.Links;
+import com.paypal.base.rest.PayPalRESTException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -14,6 +18,8 @@ import java.time.LocalDateTime;
 @Slf4j
 @AllArgsConstructor
 public class PaymentConsumer {
+    private final PaypalService paypalService;
+    private final PaymentRepository paymentRepository;
 
     @KafkaListener(topics = "${topic}", groupId = "${group-id}")
     public void consumeOrderCreated(OrderCreated order) {
@@ -25,6 +31,23 @@ public class PaymentConsumer {
                 .status(PaymentStatus.PENDING)
                 .userId(order.getUserId())
                 .build();
-        log.info("Payment created: {}", payment);
+
+        try {
+            com.paypal.api.payments.Payment payment1 = paypalService
+                    .createPayment(payment.getAmount(), "USD", "sale",
+                            "description of sale");
+
+            for(Links links : payment1.getLinks()) {
+                if(links.getRel().equals("approval_url")) {
+                    payment.setRedirectUrl(String.valueOf(links.getHref()));
+                }
+            }
+
+            Payment save = paymentRepository.save(payment);
+            log.info("Payment created: {}", save);
+        } catch (PayPalRESTException e) {
+            payment.setStatus(PaymentStatus.FAILED);
+            paymentRepository.save(payment);
+        }
     }
 }

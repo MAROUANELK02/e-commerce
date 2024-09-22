@@ -1,10 +1,7 @@
 package com.ecom.payment_service.entities;
 
 import com.ecom.payment_service.enums.PaymentStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,5 +23,7 @@ public class Payment {
     private Long userId;
     private BigDecimal amount;
     private LocalDateTime paymentDate;
+    @Enumerated(EnumType.STRING)
     private PaymentStatus status;
+    private String redirectUrl;
 }
