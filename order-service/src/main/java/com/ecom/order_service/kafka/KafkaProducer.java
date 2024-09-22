@@ -18,24 +18,14 @@ public class KafkaProducer {
     @Value("${topic}")
     private String topic;
 
-    @Value("${payment-processed}")
-    private String paymentProcessed;
-
     public KafkaProducer(OrderMapper orderMapper, KafkaTemplate<String, OrderCreated> kafkaTemplate) {
         this.orderMapper = orderMapper;
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendToInventory(Order order) {
+    public void send(Order order) {
         Message<OrderCreated> message = MessageBuilder.withPayload(orderMapper.toOrderCreated(order))
                 .setHeader(KafkaHeaders.TOPIC, topic).build();
-
-        kafkaTemplate.send(message);
-    }
-
-    public void sendToPayment(Order order) {
-        Message<OrderCreated> message = MessageBuilder.withPayload(orderMapper.toOrderCreated(order))
-                .setHeader(KafkaHeaders.TOPIC, paymentProcessed).build();
 
         kafkaTemplate.send(message);
     }

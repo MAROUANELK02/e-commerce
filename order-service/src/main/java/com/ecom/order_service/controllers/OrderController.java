@@ -1,6 +1,7 @@
 package com.ecom.order_service.controllers;
 
 import com.ecom.order_service.dtos.OrderItemDTORequest;
+import com.ecom.order_service.exceptions.InsufficientStockException;
 import com.ecom.order_service.exceptions.OrderNotFoundException;
 import com.ecom.order_service.services.OrderService;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ public class OrderController {
                                          @RequestBody List<OrderItemDTORequest> orderItems) {
         try {
             return ResponseEntity.ok().body(orderService.createOrder(userId, orderItems));
-        } catch (OrderNotFoundException e) {
+        } catch (OrderNotFoundException | InsufficientStockException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

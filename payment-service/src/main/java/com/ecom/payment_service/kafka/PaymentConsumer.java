@@ -14,19 +14,17 @@ import java.time.LocalDateTime;
 @Slf4j
 @AllArgsConstructor
 public class PaymentConsumer {
-    private final KafkaProducer kafkaProducer;
 
     @KafkaListener(topics = "${topic}", groupId = "${group-id}")
     public void consumeOrderCreated(OrderCreated order) {
         log.info("Order created: {}", order);
         Payment payment = Payment.builder()
                 .orderId(order.getOrderId())
-                .paymentId(1L)
                 .paymentDate(LocalDateTime.now())
                 .amount(order.getTotalAmount())
-                .status(PaymentStatus.COMPLETED)
+                .status(PaymentStatus.PENDING)
                 .userId(order.getUserId())
                 .build();
-        kafkaProducer.send(payment);
+        log.info("Payment created: {}", payment);
     }
 }

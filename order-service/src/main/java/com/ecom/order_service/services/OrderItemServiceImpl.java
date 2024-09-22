@@ -38,25 +38,21 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     @Override
-    public void saveAll(List<OrderItemDTORequest> orderItemDTORequests, long orderId) throws OrderNotFoundException {
+    public Order saveAll(List<OrderItemDTORequest> orderItemDTORequests, long orderId) throws OrderNotFoundException {
         List<OrderItem> orderItems = new ArrayList<>();
         for (OrderItemDTORequest orderItemDTORequest : orderItemDTORequests) {
             orderItems.add(save(orderItemDTORequest, orderId));
         }
-
-        BigDecimal total = BigDecimal.ZERO;
-
-        total = orderItems.stream()
+        BigDecimal total = orderItems.stream()
                 .map(orderItem -> orderItem.getPrice()
                         .multiply(BigDecimal.valueOf(orderItem.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
         Optional<Order> order = orderRepository.findById(orderId);
-
         if(order.isPresent()) {
             Order order1 = order.get();
             order1.setTotalAmount(total);
-            orderRepository.save(order1);
+            order1.setOrderItems(orderItems);
+            return orderRepository.save(order1);
         }else{
             throw new OrderNotFoundException("Order not found");
         }

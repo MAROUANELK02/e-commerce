@@ -6,7 +6,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class OrderCreated {
@@ -15,5 +17,5 @@ public class OrderCreated {
     private LocalDateTime orderDate;
     private OrderStatus status;
     private BigDecimal totalAmount;
-    private List<OrderItemDTOResponse> orderItems = new ArrayList<>();
+    private Map<Long, Integer> products = new HashMap<>();
 }
