@@ -45,11 +45,11 @@ public class ProductServiceApplication {
 
 			List<Product> products = List.of(
 					new Product(1L, "Samsung TV 32", "Smart TV 4K",
-							BigDecimal.valueOf(1600.00), category1.orElse(null)),
+							BigDecimal.valueOf(160.00), category1.orElse(null)),
 					new Product(2L, "Siera 40L", "Garantie 2ans, Couleur Blanche",
-							BigDecimal.valueOf(3500.00), category2.orElse(null)),
+							BigDecimal.valueOf(350.00), category2.orElse(null)),
 					new Product(3L, "Lenovo i5-11ème 12Go 256Go SSD",
-							"Avec Cartable et souris gratuitement", BigDecimal.valueOf(5500.00),
+							"Avec Cartable et souris gratuitement", BigDecimal.valueOf(550.00),
 							category3.orElse(null))
 			);
 			for (Product product : products) {

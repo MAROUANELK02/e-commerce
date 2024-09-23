@@ -5,8 +5,8 @@ import com.ecom.payment_service.enums.PaymentStatus;
 import com.ecom.payment_service.exceptions.PaymentNotFoundException;
 
 public interface PaymentService {
-    Payment getPaymentByUserId(long userId) throws PaymentNotFoundException;
-    PaymentStatus getPaymentStatusByUserId(long userId) throws PaymentNotFoundException;
-    String getRedirectUrlByUserId(long userId) throws PaymentNotFoundException;
-    void confirmPaymentByUserId(long userId) throws PaymentNotFoundException;
+    Payment getPaymentByOrderId(long orderId) throws PaymentNotFoundException;
+    PaymentStatus getPaymentStatusByOrderId(long orderId) throws PaymentNotFoundException;
+    String getRedirectUrlByOrderId(long orderId) throws PaymentNotFoundException;
+    void confirmPaymentByOrderId(long orderId) throws PaymentNotFoundException;
 }

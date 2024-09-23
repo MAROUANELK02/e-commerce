@@ -15,32 +15,32 @@ public class PaymentController {
     private final PaypalService paypalService;
     private final PaymentService paymentService;
 
-    @GetMapping("/redirectUrl/{userId}")
-    public ResponseEntity<?> redirectUrl(@PathVariable long userId) {
+    @GetMapping("/redirectUrl/{orderId}")
+    public ResponseEntity<?> redirectUrl(@PathVariable long orderId) {
         try {
-            return ResponseEntity.ok().body(paymentService.getRedirectUrlByUserId(userId));
+            return ResponseEntity.ok().body(paymentService.getRedirectUrlByOrderId(orderId));
         } catch (PaymentNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @PostMapping("/executePayment/{userId}")
-    public ResponseEntity<?> executePayment(@PathVariable(name = "userId") long userId,
+    @PostMapping("/executePayment/{orderId}")
+    public ResponseEntity<?> executePayment(@PathVariable(name = "orderId") long orderId,
                                             @RequestParam(name = "paymentId") String paymentId,
                                             @RequestParam(name = "payerId") String payerId) {
         try {
             paypalService.executePayment(paymentId, payerId);
-            paymentService.confirmPaymentByUserId(userId);
+            paymentService.confirmPaymentByOrderId(orderId);
             return ResponseEntity.ok().body("Payment successfully done");
         } catch (PayPalRESTException | PaymentNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @GetMapping("/paymentStatus/{userId}")
-    public ResponseEntity<?> paymentStatus(@PathVariable(name = "userId") long userId) {
+    @GetMapping("/paymentStatus/{orderId}")
+    public ResponseEntity<?> paymentStatus(@PathVariable(name = "orderId") long orderId) {
         try {
-            PaymentStatus status = paymentService.getPaymentStatusByUserId(userId);
+            PaymentStatus status = paymentService.getPaymentStatusByOrderId(orderId);
             return ResponseEntity.ok().body(String.valueOf(status));
         } catch (PaymentNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

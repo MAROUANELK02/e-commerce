@@ -18,6 +18,6 @@ public class Product {
     private String name;
     private String description;
     private BigDecimal price;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
 }

@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
         Order save = orderRepository.save(order);
         Order saved = orderItemService.saveAll(orderItems, save.getOrderId());
         kafkaProducer.send(saved);
-        return "Order Created";
+        return "Order Created "+saved.getOrderId();
     }
 
     @Override

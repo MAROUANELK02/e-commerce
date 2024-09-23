@@ -17,8 +17,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
 
     @Override
-    public Payment getPaymentByUserId(long userId) throws PaymentNotFoundException {
-        Optional<Payment> payment = paymentRepository.findByUserId(userId);
+    public Payment getPaymentByOrderId(long orderId) throws PaymentNotFoundException {
+        Optional<Payment> payment = paymentRepository.findByOrderId(orderId);
         if(payment.isPresent()) {
             return payment.get();
         }else{
@@ -27,18 +27,18 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentStatus getPaymentStatusByUserId(long userId) throws PaymentNotFoundException {
-        return getPaymentByUserId(userId).getStatus();
+    public PaymentStatus getPaymentStatusByOrderId(long orderId) throws PaymentNotFoundException {
+        return getPaymentByOrderId(orderId).getStatus();
     }
 
     @Override
-    public String getRedirectUrlByUserId(long userId) throws PaymentNotFoundException {
-        return getPaymentByUserId(userId).getRedirectUrl();
+    public String getRedirectUrlByOrderId(long orderId) throws PaymentNotFoundException {
+        return getPaymentByOrderId(orderId).getRedirectUrl();
     }
 
     @Override
-    public void confirmPaymentByUserId(long userId) throws PaymentNotFoundException {
-        Payment payment = getPaymentByUserId(userId);
+    public void confirmPaymentByOrderId(long orderId) throws PaymentNotFoundException {
+        Payment payment = getPaymentByOrderId(orderId);
         payment.setStatus(PaymentStatus.COMPLETED);
         paymentRepository.save(payment);
     }
