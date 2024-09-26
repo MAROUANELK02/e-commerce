@@ -1,0 +1,5 @@
+###
+POST http://localhost:8087/token
+Accept: Application/json
+Authorization: Basic TmFzc2ltOjEyMzQ=
+###

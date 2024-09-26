@@ -103,6 +103,19 @@ services:
     volumes:
       - postgres6_data:/var/lib/postgresql/data
 
+  # PostgreSQL database : security-service
+  postgres7:
+    image: postgres:13
+    container_name: postgres7
+    environment:
+      POSTGRES_USER: user7
+      POSTGRES_PASSWORD: password7
+      POSTGRES_DB: security
+    ports:
+      - "5437:5432"
+    volumes:
+      - postgres7_data:/var/lib/postgresql/data
+
 volumes:
   postgres1_data:
   postgres2_data:
@@ -110,3 +123,4 @@ volumes:
   postgres4_data:
   postgres5_data:
   postgres6_data:
+  postgres7_data:
