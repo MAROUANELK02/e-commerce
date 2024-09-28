@@ -1,5 +1,6 @@
 package com.ecom.product_service;
 
+import com.ecom.product_service.config.RsaKeysConfig;
 import com.ecom.product_service.entities.Category;
 import com.ecom.product_service.entities.Product;
 import com.ecom.product_service.enums.ECategory;
@@ -8,6 +9,7 @@ import com.ecom.product_service.services.ProductService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 
@@ -17,6 +19,7 @@ import java.util.Optional;
 
 @SpringBootApplication
 @EnableFeignClients
+@EnableConfigurationProperties(RsaKeysConfig.class)
 public class ProductServiceApplication {
 
 	public static void main(String[] args) {

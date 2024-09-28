@@ -36,7 +36,7 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/saveProduct")
+    @PostMapping("/auth/saveProduct")
     public ResponseEntity<?> saveProduct(@RequestBody ProductDTO product) {
         try {
             Product added = productService.addProduct(productMapper.ToProduct(product));
@@ -131,7 +131,7 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/product/{id}")
+    @DeleteMapping("/auth/product/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable(name = "id") Long id) {
         try {
             productService.deleteProduct(id);
