@@ -1,11 +1,10 @@
 package com.ecom.user_service.services;
 
-import com.ecom.user_service.entities.Role;
+import com.ecom.user_service.dtos.SignUpDTO;
+import com.ecom.user_service.dtos.UserRequestDTO;
 import com.ecom.user_service.entities.User;
-import com.ecom.user_service.enums.ERole;
-import com.ecom.user_service.exceptions.RoleNotFoundException;
 import com.ecom.user_service.exceptions.UserNotFoundException;
-import com.ecom.user_service.repositories.RoleRepository;
+import com.ecom.user_service.mappers.UserMapper;
 import com.ecom.user_service.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,8 @@ import java.util.Optional;
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final SecurityService securityService;
+    private final UserMapper userMapper;
 
     @Override
     public User getUserById(Long id) throws UserNotFoundException {
@@ -45,26 +45,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByUsername(String username) throws UserNotFoundException {
-        log.info("get User By username : {}", username);
-        Optional<User> user = userRepository.findByUsername(username);
-        if (user.isPresent()) {
-            return user.get();
-        }else{
-            throw new UserNotFoundException("User not found");
-        }
+    public User createUser(UserRequestDTO user) {
+        log.info("create User : {}", user);
+        User save = userRepository.save(userMapper.toUser(user));
+        SignUpDTO userCredentials = new SignUpDTO(user.getSignUpDTO().username(),
+                user.getSignUpDTO().password(),user.getSignUpDTO().email(),save.getUserId());
+        securityService.signUp(userCredentials);
+        return save;
     }
 
     @Override
-    public User createUser(User user) throws RoleNotFoundException {
-        log.info("create User : {}", user);
-        Optional<Role> role = roleRepository.findByRoleName(ERole.USER);
-        if(role.isPresent()){
-            user.setRole(role.get());
-            return userRepository.save(user);
-        }else{
-            throw new RoleNotFoundException("Role not found");
-        }
+    public User createVendor(User user) {
+        log.info("create Vendor");
+        return userRepository.save(user);
     }
 
     @Override
@@ -77,10 +70,14 @@ public class UserServiceImpl implements UserService {
                 userFound.setLast_name(user.getLast_name());
             if(!userFound.getEmail().equals(user.getEmail()))
                 userFound.setEmail(user.getEmail());
-            if(!userFound.getUsername().equals(user.getUsername()))
-                userFound.setUsername(user.getUsername());
-            if(!userFound.getPassword().equals(user.getPassword()))
-                userFound.setPassword(user.getPassword());
+            if(!userFound.getPhone().equals(user.getPhone()))
+                userFound.setPhone(user.getPhone());
+            if(!userFound.getCity().equals(user.getCity()))
+                userFound.setCity(user.getCity());
+            if(!userFound.getCountry().equals(user.getCountry()))
+                userFound.setCountry(user.getCountry());
+            if(!userFound.getAddress().equals(user.getAddress()))
+                userFound.setAddress(user.getAddress());
             log.info("update User : {}", userFound);
             return userRepository.save(userFound);
         } catch (UserNotFoundException e) {

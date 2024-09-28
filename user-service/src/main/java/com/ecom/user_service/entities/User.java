@@ -2,6 +2,7 @@ package com.ecom.user_service.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Table(name = "users")
 public class User {
     @Id
@@ -16,9 +18,10 @@ public class User {
     private Long userId;
     private String first_name;
     private String last_name;
-    private String username;
-    private String password;
+    private String address;
+    private String country;
+    private String city;
+    @Column(unique = true)
     private String email;
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Role role;
+    private String phone;
 }

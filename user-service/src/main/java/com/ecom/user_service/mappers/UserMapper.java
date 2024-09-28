@@ -10,17 +10,16 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UserMapper {
-    private final RoleMapper roleMapper;
     public User toUser(UserRequestDTO userRequestDTO) {
         User user = new User();
         BeanUtils.copyProperties(userRequestDTO, user);
+        user.setEmail(userRequestDTO.getSignUpDTO().email());
         return user;
     }
 
     public UserResponseDTO toUserResponseDTO(User user) {
         UserResponseDTO userResponseDTO = new UserResponseDTO();
         BeanUtils.copyProperties(user, userResponseDTO);
-        userResponseDTO.setRoleDTO(roleMapper.toRoleDTO(user.getRole()));
         return userResponseDTO;
     }
 }

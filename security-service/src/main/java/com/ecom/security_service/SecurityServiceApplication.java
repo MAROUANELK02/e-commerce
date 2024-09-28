@@ -1,9 +1,11 @@
 package com.ecom.security_service;
 
 import com.ecom.security_service.config.RsaKeysConfig;
+import com.ecom.security_service.dto.SignUpDTO;
 import com.ecom.security_service.entities.Role;
 import com.ecom.security_service.entities.UserCredentials;
 import com.ecom.security_service.enums.ERole;
+import com.ecom.security_service.exceptions.UserCredentialsNotFoundException;
 import com.ecom.security_service.repository.RoleRepository;
 import com.ecom.security_service.repository.UserCredentialsRepository;
 import com.ecom.security_service.services.UserCredentialsService;
@@ -30,12 +32,10 @@ public class SecurityServiceApplication {
 		return new BCryptPasswordEncoder();
 	}
 
-	//@Bean
-	CommandLineRunner commandLineRunner(UserCredentialsRepository userCredentialsService,
-										RoleRepository roleRepository,
-										PasswordEncoder passwordEncoder) {
+	@Bean
+	CommandLineRunner commandLineRunner(UserCredentialsService userCredentialsService,
+										RoleRepository roleRepository) {
 		return args -> {
-
 			if(roleRepository.findByRoleName(ERole.USER).isEmpty()) {
 				roleRepository.save(Role.builder().roleName(ERole.USER).build());
 			}
@@ -46,25 +46,14 @@ public class SecurityServiceApplication {
                 roleRepository.save(Role.builder().roleName(ERole.VENDOR).build());
             }
 
-			List<UserCredentials> userCredentials = List.of(
-					UserCredentials.builder()
-							.email("mahmod-nj@example.com").userName("mahmoud")
-							.password(passwordEncoder.encode("1234"))
-							.userId(1L).role(roleRepository.findById(1L).orElse(null))
-							.build(),
-					UserCredentials.builder()
-							.email("hanane-fn@example.com").userName("hanane")
-							.password(passwordEncoder.encode("1234"))
-							.userId(2L).role(roleRepository.findById(2L).orElse(null))
-							.build(),
-					UserCredentials.builder()
-							.email("samir-sr@example.com").userName("samir")
-							.password(passwordEncoder.encode("1234"))
-							.userId(3L).role(roleRepository.findById(3L).orElse(null))
-							.build()
-			);
+			try {
+				userCredentialsService.loadUserByUsername("admin");
+			}catch (UserCredentialsNotFoundException exp) {
+				userCredentialsService.createUserCredentialsWithVendorRole(new SignUpDTO(
+						"admin", "admin",
+						"marouanelk02@gmail.com", 1L));
+			}
 
-			userCredentialsService.saveAll(userCredentials);
 		};
 	}
 }

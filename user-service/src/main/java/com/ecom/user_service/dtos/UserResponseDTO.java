@@ -7,8 +7,9 @@ public class UserResponseDTO {
     private Long userId;
     private String first_name;
     private String last_name;
-    private String username;
-    private String password;
     private String email;
-    private RoleDTO roleDTO;
+    private String phone;
+    private String address;
+    private String city;
+    private String country;
 }
