@@ -9,8 +9,11 @@ import com.ecom.product_service.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -21,7 +24,7 @@ public class ProductController {
     private final ProductService productService;
     private final ProductMapper productMapper;
 
-    @GetMapping("/products/all")
+    @GetMapping("/auth/products/all")
     public ResponseEntity<?> allProducts(@RequestParam(required = false, defaultValue = "0") int page,
                                          @RequestParam(required = false, defaultValue = "8") int size) {
         try {
@@ -36,7 +39,8 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/auth/saveProduct")
+    @PostMapping("/saveProduct")
+    @PreAuthorize("hasAuthority('SCOPE_VENDOR')")
     public ResponseEntity<?> saveProduct(@RequestBody ProductDTO product) {
         try {
             Product added = productService.addProduct(productMapper.ToProduct(product));
@@ -46,7 +50,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/product/{id}")
+    @GetMapping("/auth/product/{id}")
     public ResponseEntity<?> getProduct(@PathVariable(name = "id") Long id) {
         try {
             Product product = productService.getProduct(id);
@@ -56,7 +60,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/price/{productId}")
+    @GetMapping("/auth/price/{productId}")
     public ResponseEntity<?> getPrice(@PathVariable(name = "productId") long productId) {
         try {
             BigDecimal price = productService.getProduct(productId).getPrice();
@@ -66,7 +70,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/products/category/{categoryName}")
+    @GetMapping("/auth/products/category/{categoryName}")
     public ResponseEntity<?> getAllProductsByCategory(@PathVariable(name = "categoryName") ECategory categoryName,
                                             @RequestParam(required = false, defaultValue = "0") int page,
                                             @RequestParam(required = false, defaultValue = "8") int size) {
@@ -83,7 +87,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/products/name/{productName}")
+    @GetMapping("/auth/products/name/{productName}")
     public ResponseEntity<?> getAllProductsByName(@PathVariable(name = "productName") String name,
                                             @RequestParam(required = false, defaultValue = "0") int page,
                                             @RequestParam(required = false, defaultValue = "8") int size) {
@@ -99,7 +103,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/products/priceLessThan/{price}")
+    @GetMapping("/auth/products/priceLessThan/{price}")
     public ResponseEntity<?> getAllProductsByPriceLessThan(@PathVariable(name = "price") BigDecimal price,
                                                   @RequestParam(required = false, defaultValue = "0") int page,
                                                   @RequestParam(required = false, defaultValue = "8") int size) {
@@ -115,7 +119,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/products/priceGreaterThan/{price}")
+    @GetMapping("/auth/products/priceGreaterThan/{price}")
     public ResponseEntity<?> getProductsByPriceGreaterThan(@PathVariable(name = "price") BigDecimal price,
                                                            @RequestParam(required = false, defaultValue = "0") int page,
                                                            @RequestParam(required = false, defaultValue = "8") int size) {
@@ -131,12 +135,45 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/auth/product/{id}")
+    @DeleteMapping("/product/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_VENDOR')")
     public ResponseEntity<?> deleteProduct(@PathVariable(name = "id") Long id) {
         try {
             productService.deleteProduct(id);
             return ResponseEntity.ok().body("User deleted successfully");
         } catch (ProductNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/auth/images/{productId}")
+    public ResponseEntity<?> imagesByProductId(@PathVariable(name = "productId") long productId) {
+        try {
+            return ResponseEntity.ok()
+                    .body(productService.getImagesOfProduct(productId));
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping(value = "auth/image/{imageId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<?> imagesByImageId(@PathVariable(name = "imageId") long imageId) {
+        try {
+            return ResponseEntity.ok()
+                    .body(productService.getImageById(imageId));
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/saveImage/{productId}")
+    @PreAuthorize("hasAuthority('SCOPE_VENDOR')")
+    public ResponseEntity<?> saveImage(@PathVariable(name = "productId") long productId,
+                                       @RequestBody MultipartFile image) {
+        try {
+            productService.saveImageOfProduct(productId, image);
+            return ResponseEntity.ok("Image saved successfully");
+        }catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

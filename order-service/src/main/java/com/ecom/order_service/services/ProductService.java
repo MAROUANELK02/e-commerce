@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @FeignClient(name = "product-service")
 public interface ProductService {
 
-    @RequestMapping(method = RequestMethod.GET, value = "/price/{productId}")
+    @RequestMapping(method = RequestMethod.GET, value = "/auth/price/{productId}")
     BigDecimal findProductPrice(@PathVariable long productId);
 
 }

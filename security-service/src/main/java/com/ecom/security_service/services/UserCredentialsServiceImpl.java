@@ -133,7 +133,7 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .subject(subject)
                 .issuedAt(instant)
-                .expiresAt(instant.plus(1, ChronoUnit.MINUTES))
+                .expiresAt(instant.plus(15, ChronoUnit.MINUTES))
                 .issuer("security-service")
                 .claim("scope", scope)
                 .build();
@@ -145,7 +145,7 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
             JwtClaimsSet jwtClaimsSetRefresh = JwtClaimsSet.builder()
                     .subject(subject)
                     .issuedAt(instant)
-                    .expiresAt(instant.plus(5, ChronoUnit.MINUTES))
+                    .expiresAt(instant.plus(60, ChronoUnit.MINUTES))
                     .issuer("security-service")
                     .build();
             String jwtRefreshToken = jwtEncoder.encode(JwtEncoderParameters

@@ -11,4 +11,6 @@ public interface SecurityService {
     @PostMapping("/auth/signUp")
     void signUp(@RequestBody SignUpDTO signUpDTO);
 
+    @PostMapping("/signUpVendor")
+    void signUpVendor(@RequestBody SignUpDTO userCredentials);
 }

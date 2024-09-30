@@ -49,9 +49,9 @@ public class SecurityServiceApplication {
 			try {
 				userCredentialsService.loadUserByUsername("admin");
 			}catch (UserCredentialsNotFoundException exp) {
-				userCredentialsService.createUserCredentialsWithVendorRole(new SignUpDTO(
+				userCredentialsService.createUserCredentialsWithAdminRole(new SignUpDTO(
 						"admin", "admin",
-						"marouanelk02@gmail.com", 1L));
+						"marouanelk02@gmail.com", 0L));
 			}
 
 		};

@@ -1,9 +1,12 @@
 package com.ecom.product_service.services;
 
+import com.ecom.product_service.entities.FileData;
 import com.ecom.product_service.entities.Product;
 import com.ecom.product_service.enums.ECategory;
+import com.ecom.product_service.exceptions.ImageNotFoundException;
 import com.ecom.product_service.exceptions.ProductNotFoundException;
 import com.ecom.product_service.repositories.CategoryRepository;
+import com.ecom.product_service.repositories.FileDataRepository;
 import com.ecom.product_service.repositories.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,8 +14,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -20,6 +28,8 @@ import java.math.BigDecimal;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final InventoryService inventoryService;
+    private final ImageService imageService;
+    private final FileDataRepository fileDataRepository;
 
     @Override
     public Product addProduct(Product product) {
@@ -91,5 +101,37 @@ public class ProductServiceImpl implements ProductService {
     public Page<Product> getProductsByPriceGreaterThan(BigDecimal price, int page, int size) {
         Pageable pageable = PageRequest.of(page,size);
         return productRepository.findByPriceGreaterThanEqual(price,pageable);
+    }
+
+    @Override
+    public void saveImageOfProduct(Long productId, MultipartFile image) throws ProductNotFoundException, IOException {
+        Product product = getProduct(productId);
+        imageService.uploadImageToStorage(product, image);
+    }
+
+    @Override
+    public List<byte[]> getImagesOfProduct(Long productId) throws ProductNotFoundException {
+        getProduct(productId);
+        List<FileData> images = fileDataRepository.findAllByProductProductId(productId);
+        List<byte[]> downloadedImages = new ArrayList<>();
+        images.forEach(fileData -> {
+            try {
+                downloadedImages.add(
+                        imageService.downloadImageFromStorage(fileData.getId())
+                );
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return downloadedImages;
+    }
+
+    @Override
+    public byte[] getImageById(Long idImage) throws ImageNotFoundException, IOException {
+        Optional<FileData> image = fileDataRepository.findById(idImage);
+        if(image.isEmpty()) {
+            throw new ImageNotFoundException("Image not found");
+        }
+        return imageService.downloadImageFromStorage(image.get().getId());
     }
 }

@@ -8,7 +8,7 @@ public interface UserService {
     User getUserById(Long id) throws UserNotFoundException;
     User getUserByEmail(String email) throws UserNotFoundException;
     User createUser(UserRequestDTO user);
-    User createVendor(User user);
+    User createVendor(UserRequestDTO user);
     User updateUser(User user);
     void deleteUser(Long id);
 }

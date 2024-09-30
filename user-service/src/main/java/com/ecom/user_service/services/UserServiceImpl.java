@@ -55,9 +55,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createVendor(User user) {
+    public User createVendor(UserRequestDTO user) {
         log.info("create Vendor");
-        return userRepository.save(user);
+        User save = userRepository.save(userMapper.toUser(user));
+        SignUpDTO userCredentials = new SignUpDTO(user.getSignUpDTO().username(),
+                user.getSignUpDTO().password(),user.getSignUpDTO().email(),save.getUserId());
+        securityService.signUpVendor(userCredentials);
+        return save;
     }
 
     @Override

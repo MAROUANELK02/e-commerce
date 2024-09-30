@@ -3,6 +3,7 @@ package com.ecom.user_service.dtos;
 import lombok.*;
 
 @Data
+@Builder
 public class UserRequestDTO {
     private String first_name;
     private String last_name;

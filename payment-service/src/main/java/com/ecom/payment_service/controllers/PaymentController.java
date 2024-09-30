@@ -7,6 +7,7 @@ import com.ecom.payment_service.services.PaymentService;
 import com.paypal.base.rest.PayPalRESTException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +17,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @GetMapping("/redirectUrl/{orderId}")
+    @PreAuthorize("hasAuthority('SCOPE_USER')")
     public ResponseEntity<?> redirectUrl(@PathVariable long orderId) {
         try {
             return ResponseEntity.ok().body(paymentService.getRedirectUrlByOrderId(orderId));
@@ -25,6 +27,7 @@ public class PaymentController {
     }
 
     @PostMapping("/executePayment/{orderId}")
+    @PreAuthorize("hasAuthority('SCOPE_USER')")
     public ResponseEntity<?> executePayment(@PathVariable(name = "orderId") long orderId,
                                             @RequestParam(name = "paymentId") String paymentId,
                                             @RequestParam(name = "payerId") String payerId) {
@@ -38,6 +41,7 @@ public class PaymentController {
     }
 
     @GetMapping("/paymentStatus/{orderId}")
+    @PreAuthorize("hasAuthority('SCOPE_USER') or hasAuthority('SCOPE_VENDOR') or hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<?> paymentStatus(@PathVariable(name = "orderId") long orderId) {
         try {
             PaymentStatus status = paymentService.getPaymentStatusByOrderId(orderId);

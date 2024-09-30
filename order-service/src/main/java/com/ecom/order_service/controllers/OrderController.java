@@ -6,6 +6,7 @@ import com.ecom.order_service.exceptions.OrderNotFoundException;
 import com.ecom.order_service.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/order/{userId}")
+    @PreAuthorize("hasAuthority('SCOPE_USER')")
     public ResponseEntity<?> createOrder(@PathVariable Long userId,
                                          @RequestBody List<OrderItemDTORequest> orderItems) {
         try {
@@ -26,6 +28,7 @@ public class OrderController {
     }
 
     @GetMapping("/orderStatus/{orderId}")
+    @PreAuthorize("hasAuthority('SCOPE_USER') or hasAuthority('SCOPE_VENDOR')")
     public ResponseEntity<?> getOrderStatus(@PathVariable Long orderId) {
         try {
             return ResponseEntity.ok().body(orderService.getOrder(orderId).getStatus());

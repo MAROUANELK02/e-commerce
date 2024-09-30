@@ -1,6 +1,8 @@
 package com.ecom.user_service;
 
 import com.ecom.user_service.config.RsaKeysConfig;
+import com.ecom.user_service.dtos.SignUpDTO;
+import com.ecom.user_service.dtos.UserRequestDTO;
 import com.ecom.user_service.entities.User;
 import com.ecom.user_service.exceptions.UserNotFoundException;
 import com.ecom.user_service.services.UserService;
@@ -18,18 +20,6 @@ public class UserServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(UserServiceApplication.class, args);
-	}
-
-	@Bean
-	CommandLineRunner commandLineRunner(UserService userService) {
-		return args -> {
-			try {
-				userService.getUserByEmail("marouanelk02@gmail.com");
-			}catch (UserNotFoundException exp) {
-				userService.createVendor(User.builder().userId(1L).first_name("admin")
-						.last_name("admin").email("marouanelk02@gmail.com").build());
-			}
-		};
 	}
 
 }
