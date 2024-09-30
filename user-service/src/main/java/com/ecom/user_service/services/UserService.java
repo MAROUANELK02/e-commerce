@@ -6,6 +6,7 @@ import com.ecom.user_service.exceptions.UserNotFoundException;
 
 public interface UserService {
     User getUserById(Long id) throws UserNotFoundException;
+    String getEmailById(Long id) throws UserNotFoundException;
     User getUserByEmail(String email) throws UserNotFoundException;
     User createUser(UserRequestDTO user);
     User createVendor(UserRequestDTO user);

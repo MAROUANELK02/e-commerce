@@ -24,6 +24,16 @@ public class UserController {
         }
     }
 
+    @GetMapping("/user/mail/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_USER')")
+    public ResponseEntity<?> getUserMail(@PathVariable(name = "id") long id) {
+        try {
+            return ResponseEntity.ok(userService.getEmailById(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/auth/saveUser")
     public ResponseEntity<?> saveUser(@RequestBody UserRequestDTO user) {
         try {
