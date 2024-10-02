@@ -5,20 +5,20 @@ import com.ecom.notification_service.entities.Notification;
 import com.ecom.notification_service.enums.NotificationStatus;
 import com.ecom.notification_service.repositories.NotificationRepository;
 import com.ecom.notification_service.services.EmailSenderService;
-import com.ecom.notification_service.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
+@Transactional
 @Slf4j
 @AllArgsConstructor
 public class NotificationConsumer {
     private final EmailSenderService emailSenderService;
-    private final UserService userService;
     private final NotificationRepository notificationRepository;
 
     @KafkaListener(topics = "${topic}", groupId = "${group-id}")
@@ -29,7 +29,7 @@ public class NotificationConsumer {
                 merci de votre confiance
                 """, paymentCreated.getOrderId(), paymentCreated.getPaymentId(),
                 paymentCreated.getPaymentDate().toString());
-        String email = userService.getUserMail(paymentCreated.getUserId());
+        String email = paymentCreated.getUserAddress();
         Notification notification = notificationRepository.save(Notification.builder()
                 .userId(paymentCreated.getUserId())
                 .orderId(paymentCreated.getOrderId())

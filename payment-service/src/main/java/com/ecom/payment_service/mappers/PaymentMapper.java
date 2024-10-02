@@ -1,21 +1,21 @@
 package com.ecom.payment_service.mappers;
 
-import com.ecom.payment_service.dtos.PaymentDTO;
+import com.ecom.payment_service.dtos.PaymentCreated;
 import com.ecom.payment_service.entities.Payment;
+import com.ecom.payment_service.services.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class PaymentMapper {
-    public Payment toPayment(PaymentDTO paymentCreated) {
-        Payment payment = new Payment();
-        BeanUtils.copyProperties(paymentCreated, payment);
-        return payment;
-    }
+    private final UserService userService;
 
-    public PaymentDTO toPaymentCreated(Payment payment) {
-        PaymentDTO paymentCreated = new PaymentDTO();
+    public PaymentCreated toPaymentCreated(Payment payment) {
+        PaymentCreated paymentCreated = new PaymentCreated();
         BeanUtils.copyProperties(payment, paymentCreated);
+        paymentCreated.setUserAddress(userService.getUserMail(paymentCreated.getUserId()));
         return paymentCreated;
     }
 }

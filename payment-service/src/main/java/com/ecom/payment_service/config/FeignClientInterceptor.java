@@ -1,4 +1,4 @@
-package com.ecom.notification_service.config;
+package com.ecom.payment_service.config;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;

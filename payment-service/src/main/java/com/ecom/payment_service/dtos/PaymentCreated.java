@@ -7,12 +7,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-public class PaymentDTO {
+public class PaymentCreated {
     private Long paymentId;
     private Long orderId;
     private Long userId;
+    private String userAddress;
     private BigDecimal amount;
     private LocalDateTime paymentDate;
     private PaymentStatus status;
-    private String redirectUrl;
 }

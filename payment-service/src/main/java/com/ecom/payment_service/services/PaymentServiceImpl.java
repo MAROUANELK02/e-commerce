@@ -3,6 +3,7 @@ package com.ecom.payment_service.services;
 import com.ecom.payment_service.entities.Payment;
 import com.ecom.payment_service.enums.PaymentStatus;
 import com.ecom.payment_service.exceptions.PaymentNotFoundException;
+import com.ecom.payment_service.kafka.KafkaProducer;
 import com.ecom.payment_service.repositories.PaymentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
+    private final KafkaProducer kafkaProducer;
 
     @Override
     public Payment getPaymentByOrderId(long orderId) throws PaymentNotFoundException {
@@ -40,6 +42,7 @@ public class PaymentServiceImpl implements PaymentService {
     public void confirmPaymentByOrderId(long orderId) throws PaymentNotFoundException {
         Payment payment = getPaymentByOrderId(orderId);
         payment.setStatus(PaymentStatus.COMPLETED);
-        paymentRepository.save(payment);
+        Payment save = paymentRepository.save(payment);
+        kafkaProducer.send(save);
     }
 }

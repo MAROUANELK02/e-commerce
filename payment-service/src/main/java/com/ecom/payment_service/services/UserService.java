@@ -1,4 +1,4 @@
-package com.ecom.notification_service.services;
+package com.ecom.payment_service.services;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

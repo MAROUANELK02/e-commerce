@@ -1,6 +1,6 @@
-package com.ecom.notification_service.dtos;
+package com.ecom.order_service.dtos;
 
-import com.ecom.notification_service.enums.PaymentStatus;
+import com.ecom.order_service.enums.PaymentStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
