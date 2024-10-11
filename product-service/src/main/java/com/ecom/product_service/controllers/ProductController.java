@@ -156,11 +156,11 @@ public class ProductController {
         }
     }
 
-    @GetMapping(value = "auth/image/{imageId}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<?> imagesByImageId(@PathVariable(name = "imageId") long imageId) {
+    @GetMapping(value = "auth/image/{productId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<?> imagesByImageId(@PathVariable(name = "productId") long productId) {
         try {
             return ResponseEntity.ok()
-                    .body(productService.getImageById(imageId));
+                    .body(productService.getImageByProductId(productId));
         }catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

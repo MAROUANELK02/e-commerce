@@ -25,5 +25,5 @@ public interface ProductService {
 
     void saveImageOfProduct(Long productId, MultipartFile image) throws ProductNotFoundException, IOException;
     List<byte[]> getImagesOfProduct(Long productId) throws ProductNotFoundException;
-    byte[] getImageById(Long idImage) throws ImageNotFoundException, IOException;
+    byte[] getImageByProductId(Long idImage) throws ImageNotFoundException, IOException;
 }

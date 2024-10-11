@@ -127,8 +127,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public byte[] getImageById(Long idImage) throws ImageNotFoundException, IOException {
-        Optional<FileData> image = fileDataRepository.findById(idImage);
+    public byte[] getImageByProductId(Long productId) throws ImageNotFoundException, IOException {
+        Optional<FileData> image = fileDataRepository.findByProductProductId(productId);
         if(image.isEmpty()) {
             throw new ImageNotFoundException("Image not found");
         }

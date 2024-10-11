@@ -106,12 +106,14 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
         Authentication authentication = null;
         String subject = null;
         String scope = null;
+        Long id = null;
 
         if(loginDTO.grantType().equals("password")) {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginDTO.username(), loginDTO.password()));
             subject = authentication.getName();
+            id = userCredentialsRepository.findByUserNameOrEmail(subject, subject).getUserId();
             scope = authentication.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.joining(" "));
@@ -123,6 +125,7 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
                     .loadUserByUsername(subject);
             Collection<? extends GrantedAuthority> authorities =
                     userDetails.getAuthorities();
+            id = userCredentialsRepository.findByUserNameOrEmail(subject, subject).getUserId();
             scope = authorities.stream()
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.joining(" "));
@@ -136,6 +139,7 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
                 .expiresAt(instant.plus(15, ChronoUnit.MINUTES))
                 .issuer("security-service")
                 .claim("scope", scope)
+                .claim("id", id)
                 .build();
         String jwtAccessToken = jwtEncoder.encode(JwtEncoderParameters
                 .from(jwtClaimsSet)).getTokenValue();
